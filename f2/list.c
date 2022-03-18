@@ -25,7 +25,23 @@ list *list_new_random(int size, int range){
 }
 
 void list_add_first(int val, list *l){
-  /* to complete ... */
+  if(l == NULL)
+    return;
+
+  node *n = node_new(val, NULL);
+  if(list_size(l) == 0){
+    l->first = n;
+  }
+
+  else{
+    //Connects the new node to the previous head of the list
+    n->next = l->first;
+
+    //Replaces the head
+    l->first = n;
+  }
+
+  l->size++;
 }
 
 void list_add_last(int val, list *l){
@@ -50,7 +66,15 @@ int list_get_first(list *l){
 }
 
 int list_get_last(list *l){
-  /* to complete ... */
+  if(l == NULL)
+    return -1;
+
+  node* curr = l->first;
+
+  while(curr->next != NULL)
+    curr = curr->next;
+
+  return curr->val;
 }
 
 void list_remove_first(list *l){
@@ -63,13 +87,36 @@ void list_remove_first(list *l){
 }
 
 void list_remove_last(list *l){
-  /* to complete ... */
+  node* curr = l->first;
+  node* previous;
+  for(int i = 0; i < list_size(l) - 1; i++){
+    if(i == list_size(l) - 2)
+      previous = curr;
+
+    curr = curr->next;
+  }
+
+  free(curr);
+  previous->next = NULL;
+  l->size--;
 }
 
 int list_size(list *l){
-  /* to complete ... */
+  return l->size;
 }
 
 void list_print(list *l){
-  /* to complete ... */
+  if(l == NULL)
+    return;
+
+  node* curr = l->first;
+
+  printf("List size: %d\n", list_size(l));
+  
+  while(curr != NULL){
+    printf("%d -> ", curr->val);
+    curr = curr->next;
+  }
+
+  printf("NULL\n\n");
 }
