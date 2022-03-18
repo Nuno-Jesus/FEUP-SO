@@ -15,17 +15,17 @@ int main(){
   printf("m2\n");
   matrix_print(m2);
 
- /*  printf("m3\n");
+  printf("m3\n");
   matrix_print(m3);
 
   printf("m4\n");
-  matrix_print(m4); */
+  matrix_print(m4);
 
   printf("m5\n");
   matrix_print(m5);
 
- /*  printf("m6\n");
-  matrix_print(m6); */
+  printf("m6\n");
+  matrix_print(m6);
 
   return 0;
 }

@@ -38,7 +38,7 @@ void matrix_print(matrix *u){
   for(int i = 0; i < u->m; i++){
     printf("   { ");
     for(int k = 0; k < u->n; k++){
-      printf("%lf ", u->vals[i*u->m + k]);
+      printf("%lf ", matrix_get(i, k, u));
     }
 
     printf("}\n");
@@ -51,7 +51,7 @@ double matrix_get(int row, int col, matrix *u){
 }
 
 void matrix_set(int row, int col, double val, matrix *u){
-  u->vals[row * u->m + col] = val;
+  *(u->vals + row * u->m + col) = val;
 }
 
 matrix *matrix_add(matrix *u, matrix *v){
@@ -112,7 +112,7 @@ matrix *matrix_trans(matrix *u){
   
   for(int i = 0; i < u->n; i++){
     for(int j = 0; j < u->m; j++){
-      m->vals[j*u->m + i] = u->vals[i*u->m + j];
+      matrix_set(i, j, matrix_get(j, i, u), m);
     }
   }
 
