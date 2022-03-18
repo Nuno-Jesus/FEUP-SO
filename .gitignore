@@ -1,0 +1,12 @@
+#Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+#Object files
+*.o
+
+#Executables
+*.exe
+*.out
