@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-void lowercase(char *string, int size){
-  for(int i = 0; i < size; i++)
-    if(string[i] >= 97 && string[i] <= 122)
+void lowercase(char *string){
+  for(int i = 0; i < strlen(string); i++)
+    if(string[i] >= 'A' && string[i] <= 'Z')
       string[i] = string[i] - ('A' - 'a');
 }
 
