@@ -7,11 +7,11 @@ int isSubstring(char *needle, char* haystack){
 
 int main(int argc, char **argv){
   if(argc != 3){
-    printf("Usage: command string1 string2");
+    printf("Usage: command needle haystack\n");
     return -1;
   }
 
-  if(occurs(argv[1], argv[2]))
+  if(isSubstring(argv[1], argv[2]))
     printf("The first string occurs in the second\n");
 
   else
