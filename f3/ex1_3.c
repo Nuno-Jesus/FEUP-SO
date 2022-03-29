@@ -20,7 +20,7 @@ int countOccurences(char *needle, char* haystack){
 
 int main(int argc, char **argv){
   if(argc != 3){
-    printf("Usage: command string1 string 2");
+    printf("Usage: command needle haystack");
     return -1;
   }
 
