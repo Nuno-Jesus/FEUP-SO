@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define BLOCK_SIZE 256
+
 void copyFile(char* src, char* dst){
   FILE* source = fopen(src, "r");
   if(source == NULL){
@@ -8,20 +10,25 @@ void copyFile(char* src, char* dst){
     return;
   }
 
-  FILE* destiny = fopen(dst, "r");
-  if(destiny == NULL){
-    printf("\n\t----- ERROR OPENING DESTINY FILE -----\n\n");
+  FILE* destination = fopen(dst, "w");
+  if(destination == NULL){
+    printf("\n\t----- DESTINATION FILE NOT FOUND -----\n\n");
     return;
   }
 
-  char* c;
-  while(!feof(source)){
-    fread(c, sizeof(char), 1, source);
-    fwrite(c, sizeof(1), 1, destiny);
+  char block[BLOCK_SIZE];
+  size_t size = 0;
+  int stop = 0;
+  
+  while(!stop){
+    if((size = fread(block, BLOCK_SIZE, 1, source)) < BLOCK_SIZE)
+      stop = 1;
+
+    fwrite(block, strlen(block), 1, destination);
   }
 
   fclose(source);
-  fclose(destiny);
+  fclose(destination);
 }
 
 void print_usage(){
@@ -31,8 +38,9 @@ void print_usage(){
 int main(int argc, char** argv){
   if(argc < 3){
     print_usage();
-    return;
+    return -1;
   }
 
   copyFile(argv[1], argv[2]);
+  return 0;
 }
