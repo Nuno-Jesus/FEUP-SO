@@ -1,7 +1,10 @@
 #include <stdio.h>
 
+#define BLOCK_SIZE 256
+
 void printFile(char* file){
-  char* c;
+  char block[BLOCK_SIZE];
+  size_t size;
   FILE* f = fopen(file, "r");
   
   if(f == NULL){
@@ -9,15 +12,18 @@ void printFile(char* file){
     return;
   }
 
-  while(!feof(f)){
-    fread(c, sizeof(char), 1, f);
-    printf("%s", c);
+  int stop = 0;
+  while(!stop){
+    if((size = fread(block, BLOCK_SIZE, 1, f)) < BLOCK_SIZE)
+      stop = 1;
+
+    puts(block);
   }
 }
 
-void printFiles(char** files, int n){
+void printFiles(int n, char** files){
   for(int i = 0; i < n; i++)
-    printFile(files[i]);
+    printFile(files[i + 1]);
 }
 
 int main(int argc, char** argv){
@@ -26,5 +32,5 @@ int main(int argc, char** argv){
     return -1;
   }
 
-  printFiles(argv, n - 1);
+  printFiles(argc - 1, argv);
 }
