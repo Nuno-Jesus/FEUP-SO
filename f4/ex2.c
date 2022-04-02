@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <fcntl.h>           
 #include <stdio.h>
@@ -138,6 +139,7 @@ int main(int argc, char *argv[]){
   if (chmod(argv[2], newperms) == -1){
     (void)fprintf(stderr, "%s: cannot chmod %s\n", argv[0], argv[2]);
     return EXIT_FAILURE;
+    struct timespec time;
   }
   
   printf("Successfully changed the permissions of %s to %s.\n", argv[2], argv[1]);
