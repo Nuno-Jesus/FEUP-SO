@@ -12,77 +12,124 @@ int main(int argc, char *argv[]){
   }
 
   int perms = atoi(argv[1]);
+  //Gets the other's permissions
   int operms = perms % 10;
   perms = perms / 10;
 
+  //Gets the group's permissions
   int gperms = perms % 10;
   perms = perms / 10;
 
+  //Gets the user's permissions
   int uperms = perms;
   mode_t newperms = (mode_t)0;
+
   switch (uperms){
     case 0:
       break;
-    case 1: /* ... */
-    case 2: /* ... */
-    case 3: /* ... */
+
+    case 1: 
+      newperms |= S_IXUSR;
+      break;
+
+    case 2:
+      newperms |= S_IWUSR;
+      break;
+
+    case 3:
+      newperms |= S_IWUSR | S_IXUSR;
+      break;
+
     case 4:
       newperms |= S_IRUSR;
       break;
+
     case 5:
       newperms |= S_IRUSR | S_IXUSR;
       break;
+
     case 6:
       newperms |= S_IRUSR | S_IWUSR;
       break;
-    case 7: /* ... */
+
+    case 7: 
+      newperms |= S_IRUSR | S_IWUSR | S_IXUSR;
+      break;
+
     default:
       (void)fprintf(stderr, "%s: illegal permission value\n", argv[0]);
-      /* ... */
+      return EXIT_FAILURE;
   }
 
   switch (gperms){
-    case 0: /* ... */
-    case 1:
+    case 0:
+      break;
+
+    case 1: 
       newperms |= S_IXGRP;
       break;
+
     case 2:
       newperms |= S_IWGRP;
       break;
+
     case 3:
       newperms |= S_IWGRP | S_IXGRP;
       break;
-    case 4: /* ... */
-    case 5: /* ... */
+
+    case 4:
+      newperms |= S_IRGRP;
+      break;
+
+    case 5:
+      newperms |= S_IRGRP | S_IXGRP;
+      break;
+
     case 6:
       newperms |= S_IRGRP | S_IWGRP;
       break;
-    case 7:
+
+    case 7: 
       newperms |= S_IRGRP | S_IWGRP | S_IXGRP;
       break;
+
     default:
-      /* ... */
-    return EXIT_FAILURE;
+      (void)fprintf(stderr, "%s: illegal permission value\n", argv[0]);
+      return EXIT_FAILURE;
   }
 
   switch (operms){
     case 0:
       break;
-    case 1:
+
+    case 1: 
       newperms |= S_IXOTH;
       break;
+
     case 2:
       newperms |= S_IWOTH;
       break;
-    case 3: /* ... */
+
+    case 3:
+      newperms |= S_IWOTH | S_IXOTH;
+      break;
+
     case 4:
       newperms |= S_IROTH;
       break;
+
     case 5:
       newperms |= S_IROTH | S_IXOTH;
       break;
-    case 6: /* ... */
-    case 7: /* ... */
+
+    case 6:
+      newperms |= S_IROTH | S_IWOTH;
+      break;
+
+    case 7: 
+      newperms |= S_IROTH| S_IWOTH | S_IXOTH;
+      break;
+
     default:
       (void)fprintf(stderr, "%s: illegal permission value\n", argv[0]);
       return EXIT_FAILURE;
@@ -92,5 +139,7 @@ int main(int argc, char *argv[]){
     (void)fprintf(stderr, "%s: cannot chmod %s\n", argv[0], argv[2]);
     return EXIT_FAILURE;
   }
-  /* ... */
+  
+  printf("Successfully changed the permissions of %s to %s.\n", argv[2], argv[1]);
+  return 0;
 }
