@@ -1,36 +1,60 @@
-Program -> ImportDeclaration ClassDeclaration EOF.
+#include <sys/types.h>
+#include <sys/stat.h>
 
-ImportDeclaration -> ("import" Identifier ( "," Identifier )* ";")*.
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <utime.h>
 
-ClassDeclaration -> "class" Identifier [ "extends" Identifier ] "{" ( VarDeclaration )* ( MethodDeclaration )* "}".
+void print_usage(){
+  printf("Usage: command filename\n");
+  exit(-1);
+}
 
-VarDeclaration -> Type Identifier ";".
+void create_file(char* filename){
+  //Creates the file
+  if(open(filename, O_CREAT) == -1){
+    fprintf(stderr, "\n\t----- COULDN'T CREATE THE %s FILE -----\n\n", filename);
+    exit(-1);
+  }
 
-MethodDeclaration -> "public" Type Identifier "(" [ Type Identifier ( "," Type Identifier )* ] ")" "{"( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
-|"public" "static" "void" "main" "(" "String" "[" "]" Identifier ")" "{" ( VarDeclaration )* ( Statement )* "}".
+  //Sets up new perms
+  mode_t perms = 0;
+  perms |= S_IRUSR | S_IXUSR | S_IRGRP | S_IROTH; //644
+  if(chmod(filename, perms) == -1){
+    fprintf(stderr, "\n\t----- COULDN'T SET THE PERMISSIONS OF %s -----\n\n", filename);
+    exit(-1);
+  }
 
-Identifier -> ("a"-"z") (("a"-"z") | ("A"-"Z") | ("0"-"9"))*.
-EOF -> "".
+  printf("The file %s was created successfully.\n", filename);
+}
 
-Type -> "int" "[" "]"
-| "boolean"
-| "int"
-| Identifier.
+void change_access_time(char* filename){
+  int fd = open(filename, O_RDONLY);
+  if(fd == -1){
+    fprintf(stderr, "\n\t----- THE FILE %s COULDN'T BE OPENED -----\n\n", filename);
+    exit(-1);
+  }
 
-Statement -> "{" ( Statement )* "}"
-| "if" "(" Expression ")" Statement "else" Statement
-| "while" "(" Expression ")" Statement
-| Expression ";"
-| Identifier "->" Expression ";"
-| Identifier "[" Expression "]" "->" Expression ";".
+  //The call to utime changes the access and modifying dates according to what exists in buffer
+  struct utimbuf buffer;
+  buffer.actime = time(NULL);
+  utime(filename, &buffer);
 
-Expression -> Expression ( "&&" | "<" | "+" | "-" | "*" | "/")  Expression
-| Expression "[" Expression "]"
-| Expression "," "length"
-| Expression "," Identifier "(" [ Expression ( "," Expression )* ] ")"
-| IntegerLiteral
-| "true"
-| "false"
-| Identifier
-| "this"
-|"new" "int" "["Expression"]" | "new" Identifier "(" ")" | "!" Expression | "(" Expression ")".
+  printf("Successfully changed the access date of %s to today.\n", filename);
+}
+
+int main(int argc, char**argv){
+  if(argc != 2)
+    print_usage();
+
+  //Checks if the file
+  int fd = open(argv[1], O_RDONLY);
+  if(fd == -1)
+    create_file(argv[1]);
+  else
+    change_access_time(argv[1]);
+
+  return 0;
+}
