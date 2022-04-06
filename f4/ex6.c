@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <pwd.h>
+#include <time.h>
+#include <sys/stat.h>
 
 void print_usage(char* command){
   printf("Usage: %s filename\n", command);
@@ -32,11 +34,32 @@ void print_permissions(mode_t permissions){
 void print_ownership(uid_t uid, gid_t gid){
   struct passwd* info = getpwuid(uid);
   if(info != NULL)
-    printf("%s %s ", info.pw_name, gid);
+    printf("%s %d ", info->pw_name, gid);
 }
 
 void print_modification_date(struct timespec date){
-  printf("%s ", date.modtime);
+  char* buffer = ctime(&date.tv_sec);
+  buffer[strlen(buffer) - 1] = '\0';
+  printf("%s ", buffer);
+}
+
+struct stat read_status(char* filename){
+  struct stat info;
+  if(lstat(filename, &info) == -1){
+    fprintf(stderr, "\n\t----- COULDN'T READ %s STATUS -----\n\n", filename);
+    exit(-1);
+  }
+
+  return info;
+}
+
+void list_file(char* filename){
+  struct stat info = read_status(filename);
+  print_permissions(info.st_mode);
+  printf("%d ", (int)info.st_blocks);
+  print_ownership(info.st_uid, info.st_gid);
+  print_modification_date(info.st_mtim);
+  printf("%s\n", filename);
 }
 
 void list_directory(char* filename){
@@ -49,32 +72,14 @@ void list_directory(char* filename){
     exit(-1);
   }
     
-  printf("%s/\n", filename);
+  printf("%s:\n", filename);
   p = readdir(q);
   while (p != NULL){
-    printf("\t%s\n", p->d_name);
+    list_file(p->d_name);
     p = readdir(q);
   }
 
   closedir(q);
-}
-
-void list_file(char* filename){
-  struct stat info = read_status(filename);
-  print_permissions(info.st_mode);
-  print_ownership(info.st_uid, info.st_gid);
-  print_modification_date(info.st_mtim);
-  printf("%s\n", filename);
-}
-
-struct stat read_status(char* filename){
-  struct stat info;
-  if(lstat(filename, &info) == -1){
-    fprintf(stderr, "\n\t----- COULDN'T READ %s STATUS -----\n\n", filename);
-    exit(-1);
-  }
-
-  return info;
 }
 
 int main(int argc, char **argv){
@@ -88,7 +93,7 @@ int main(int argc, char **argv){
   if(S_ISDIR(info.st_mode))
     list_directory(argv[1]);
   else
-    list_file(argv[1], info);
+    list_file(argv[1]);
 
   return EXIT_SUCCESS;
 }
