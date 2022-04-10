@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+/**
+ * !Q4: If the function execlp executes successfully, how does the child process signal its end to the parent process?
+ * When the child process terminates, a SIGCHLD signal is sent, . 
+*/
+
 int main(int argc, char *argv[]){
   pid_t pid;
   /* fork a child process */
