@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
 
-        do{
+        while(1){
             size = read(file, line, BUFFERSIZE);
 
             if((nbytes = write(fd[WRITE_END], line, strlen(line))) < 0){
@@ -66,7 +66,8 @@ int main(int argc, char *argv[]){
                 fprintf(stderr, "Cannot wait for child: %s\n", strerror(errno));
             }
 
-        }while(size == BUFFERSIZE);
+            if(size != BUFFERSIZE) break;
+        }
         
         close(file);
         exit(EXIT_SUCCESS);
