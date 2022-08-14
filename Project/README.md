@@ -1,9 +1,3 @@
-# Trabalho Prático 
-
-## [Questão 1](./Q1/) 
-## [Questão 2](./Q2/)
-## [Questão 3](./Q3/)
-
 Constituição do Grupo:
 
 - Carlos Eduardo Coelho Verissimo 201907716
