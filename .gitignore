@@ -1,12 +1,15 @@
-#Libraries
+# Libraries
 *.lib
 *.a
 *.la
 *.lo
 
-#Object files
+# Object files
 *.o
 
-#Executables
+# Executables
 *.exe
 *.out
+
+# Visual Studio Code 
+*.vscode
